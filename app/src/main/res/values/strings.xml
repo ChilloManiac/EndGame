@@ -9,5 +9,17 @@
     <string name="title_activity_host">HostActivity</string>
     <string name="title_activity_join">JoinActivity</string>
     <string name="dialogFragmentButtonText">OK</string>
+    <string name="title_activity_instructions">InstructionsActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="instruction_string">TODO: FILL THIS \n STUFF</string>
+    <string name="hosting_title">Hosting...</string>
+    <string name="hosting_breadtext">Your Gamecode:</string>
+    <string name="Back">Back</string>
+    <string name="Init_button_host">Host A Game</string>
+    <string name="init_button_join">Join A Game</string>
+    <string name="init_button_instructions">Instructions</string>
+    <string name="joining_title">Joining...</string>
+    <string name="joining_breadtext">Enter Code Here</string>
+    <string name="joining_button_submit">Submit</string>
 
 </resources>

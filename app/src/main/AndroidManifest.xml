@@ -24,6 +24,10 @@
             android:name="com.example.chris_000.endgame.JoinActivity"
             android:label="@string/title_activity_join" >
         </activity>
+        <activity
+            android:name="com.example.chris_000.endgame.InstructionsActivity"
+            android:label="@string/title_activity_instructions" >
+        </activity>
     </application>
 
 </manifest>

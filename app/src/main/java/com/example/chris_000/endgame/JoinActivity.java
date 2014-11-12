@@ -13,7 +13,7 @@ public class JoinActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.join_activity);
+        setContentView(R.layout.activity_join);
 
         final Button backButton = (Button) findViewById(R.id.join_back_button);
         backButton.setOnClickListener(new View.OnClickListener() {

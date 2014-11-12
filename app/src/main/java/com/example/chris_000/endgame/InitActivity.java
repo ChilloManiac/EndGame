@@ -12,7 +12,7 @@ public class InitActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.init_activity);
+        setContentView(R.layout.activity_init);
 
         final Button hostButton = (Button) findViewById(R.id.host_button);
         hostButton.setOnClickListener(new View.OnClickListener() {
@@ -28,6 +28,15 @@ public class InitActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent changeActivity = new Intent(InitActivity.this,JoinActivity.class);
+                InitActivity.this.startActivity(changeActivity);
+            }
+        });
+
+        final Button instructionsButton = (Button) findViewById(R.id.instructions_button);
+        instructionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent changeActivity = new Intent(InitActivity.this,InstructionsActivity.class);
                 InitActivity.this.startActivity(changeActivity);
             }
         });

@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:textSize="35sp"
         android:layout_marginTop="50dip"
-        android:text="Hosting..."
+        android:text="@string/hosting_title"
         android:id="@+id/textView"
         android:layout_gravity="center_horizontal" />
 
@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dip"
         android:textSize="20sp"
-        android:text="Your Gamecode:"
+        android:text="@string/hosting_breadtext"
         android:id="@+id/textView2"
         android:layout_gravity="center_horizontal" />
 
@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="150dip"
-        android:text="Back"
+        android:text="@string/Back"
         android:id="@+id/host_back_button"
         android:layout_gravity="center_horizontal" />
 </LinearLayout>
