@@ -22,5 +22,14 @@ public class InitActivity extends Activity {
                 InitActivity.this.startActivity(changeActivity);
             }
         });
+
+        final Button joinButton = (Button) findViewById(R.id.join_button);
+        joinButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent changeActivity = new Intent(InitActivity.this,JoinActivity.class);
+                InitActivity.this.startActivity(changeActivity);
+            }
+        });
     }
 }
