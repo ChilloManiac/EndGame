@@ -1,16 +1,15 @@
 package com.example.chris_000.endgame;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.TextView;
 
 public class DialogActivity extends FragmentActivity {
 
     private FragmentTransaction transaction;
     private android.support.v4.app.Fragment DialogMsgFragment;
+    private String dialog1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +26,9 @@ public class DialogActivity extends FragmentActivity {
             transaction.add(R.id.dialogLayoutFrame, DialogMsgFragment).commit();
         }
 
-
+        dialog1 = "Test test. \nBlaBalalablablabla.\nBla!";
+        TextView textView = (TextView)findViewById(R.id.TextViewDialog);
+        textView.setText(dialog1);
 
     }
 

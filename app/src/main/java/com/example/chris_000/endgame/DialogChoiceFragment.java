@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 
-public class DialogMsgFragment extends Fragment {
+public class DialogChoiceFragment extends Fragment {
 
     Button button = (Button) getView().findViewById(R.id.dialogFragmentButton);
 
