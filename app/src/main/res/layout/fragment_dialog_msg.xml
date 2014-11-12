@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/dialogFragmentButton"
+        android:layout_width="80dip"
+        android:layout_height="wrap_content"
+        android:text="@string/dialogFragmentButtonText"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:id="@+id/dialogFragmentText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:editable="false"
+        android:inputType="text"
+        android:layout_toEndOf="@+id/dialogFragmentButton"
+        android:layout_alignBottom="@+id/dialogFragmentButton">
+        <requestFocus />
+    </EditText>
+
+</RelativeLayout>
