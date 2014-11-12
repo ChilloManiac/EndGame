@@ -7,21 +7,19 @@
     <Button
         android:id="@+id/dialogFragmentButton"
         android:layout_width="80dip"
-        android:layout_height="wrap_content"
+        android:layout_height="40dip"
         android:text="@string/dialogFragmentButtonText"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
 
-    <EditText
+    <TextView
         android:id="@+id/dialogFragmentText"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:editable="false"
-        android:inputType="text"
+        android:layout_height="40dip"
+        android:textSize="32sp"
         android:layout_toEndOf="@+id/dialogFragmentButton"
-        android:layout_alignBottom="@+id/dialogFragmentButton">
-        <requestFocus />
-    </EditText>
+        android:text="Waiting..."
+        android:layout_alignParentTop="true">
+    </TextView>
 
 </RelativeLayout>
