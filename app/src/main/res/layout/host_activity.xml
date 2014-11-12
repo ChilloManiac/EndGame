@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="35sp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="50dip"
         android:text="Hosting..."
         android:id="@+id/textView"
         android:layout_gravity="center_horizontal" />
@@ -16,7 +16,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="50dip"
         android:textSize="20sp"
         android:text="Your Gamecode:"
         android:id="@+id/textView2"
@@ -25,7 +25,7 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="20dip"
         android:editable="false"
         android:text="thisisrandomcode"
         android:id="@+id/editText"
@@ -34,8 +34,8 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="150dip"
         android:text="Back"
-        android:id="@+id/button4"
+        android:id="@+id/host_back_button"
         android:layout_gravity="center_horizontal" />
 </LinearLayout>
