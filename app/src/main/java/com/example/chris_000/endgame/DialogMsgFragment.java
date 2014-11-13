@@ -11,12 +11,19 @@ import android.widget.Button;
 
 public class DialogMsgFragment extends Fragment {
 
-    Button buttonMsg = (Button) getView().findViewById(R.id.dialogMsgButton);
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
+        return inflater.inflate(R.layout.fragment_dialog_msg, container, false);
+
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        Button buttonMsg = (Button) getView().findViewById(R.id.dialogMsgButton);
         buttonMsg.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
@@ -25,7 +32,6 @@ public class DialogMsgFragment extends Fragment {
             }
         });
 
-        return inflater.inflate(R.layout.fragment_dialog_msg, container, false);
-
+        super.onViewCreated(view, savedInstanceState);
     }
 }

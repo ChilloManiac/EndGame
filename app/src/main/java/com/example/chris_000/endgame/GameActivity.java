@@ -18,6 +18,7 @@ public class GameActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+
         Button debugWin = (Button) findViewById(R.id.ActivityGameDebugWin);
         debugWin.setOnClickListener(new View.OnClickListener() {
 
@@ -29,7 +30,7 @@ public class GameActivity extends Activity{
                 final PopupWindow pw = new PopupWindow(popupView,400,440, true);
 
                 pw.showAtLocation(findViewById(R.id.activityGameLayout), Gravity.CENTER, 0, 0);
-                Button close = (Button) findViewById(R.id.popUpButton);
+                Button close = (Button) popupView.findViewById(R.id.popUpButton);
                 close.setOnClickListener(new View.OnClickListener() {
 
                     public void onClick(View popupView) {
@@ -42,4 +43,6 @@ public class GameActivity extends Activity{
             }
         });
     }
+
+
 }
