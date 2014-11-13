@@ -24,6 +24,7 @@ public class GameActivity extends Activity{
             public void onClick(View view) {
                 LayoutInflater inflater = (LayoutInflater) GameActivity.this
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
                 View popupView = inflater.inflate(R.layout.popup_view, null, false);
                 final PopupWindow pw = new PopupWindow(popupView,400,440, true);
 
@@ -36,7 +37,7 @@ public class GameActivity extends Activity{
                         Intent changeActivity = new Intent(GameActivity.this, DialogActivity.class);
                         GameActivity.this.startActivity(changeActivity);
                     }
-            });
+                });
 
             }
         });

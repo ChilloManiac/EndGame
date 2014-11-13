@@ -19,7 +19,7 @@ public class DialogMsgFragment extends Fragment {
 
         buttonMsg.setOnClickListener(new View.OnClickListener() {
 
-            public void onClick(View popupView) {
+            public void onClick(View view) {
                 Intent changeActivity = new Intent(getActivity(), GameActivity.class);
                 startActivity(changeActivity);
             }
