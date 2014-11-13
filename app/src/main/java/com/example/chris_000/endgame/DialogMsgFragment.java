@@ -1,5 +1,6 @@
 package com.example.chris_000.endgame;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,8 +17,15 @@ public class DialogMsgFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        //buttonMsg.setOnClickListener();
+        buttonMsg.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View popupView) {
+                Intent changeActivity = new Intent(getActivity(), GameActivity.class);
+                startActivity(changeActivity);
+            }
+        });
 
         return inflater.inflate(R.layout.fragment_dialog_msg, container, false);
+
     }
 }
