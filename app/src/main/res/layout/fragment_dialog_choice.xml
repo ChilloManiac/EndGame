@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialogChoiceTextView"
+        android:layout_toStartOf="@+id/dialogChoiceButtonA"
+        android:text="Valget er dit:"
+        android:textSize="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_gravity="center_horizontal" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="60dip"
+        android:layout_height="wrap_content"
+        android:text="A"
+        android:id="@+id/dialogChoiceButtonA"
+        android:layout_toStartOf="@+id/dialogChoiceTextView"
+        android:layout_alignParentTop="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="60dip"
+        android:layout_height="wrap_content"
+        android:text="B"
+        android:id="@+id/dialogChoiceButtonB"
+        android:layout_toStartOf="@+id/dialogChoiceButtonA"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
 </LinearLayout>

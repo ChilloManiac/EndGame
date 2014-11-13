@@ -10,13 +10,13 @@ import android.widget.Button;
 
 public class DialogMsgFragment extends Fragment {
 
-    Button button = (Button) getView().findViewById(R.id.dialogFragmentButton);
+    Button buttonMsg = (Button) getView().findViewById(R.id.dialogMsgButton);
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        //button.setOnClickListener();
+        //buttonMsg.setOnClickListener();
 
         return inflater.inflate(R.layout.fragment_dialog_msg, container, false);
     }

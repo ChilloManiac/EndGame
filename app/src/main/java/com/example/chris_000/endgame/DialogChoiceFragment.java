@@ -10,13 +10,15 @@ import android.widget.Button;
 
 public class DialogChoiceFragment extends Fragment {
 
-    Button button = (Button) getView().findViewById(R.id.dialogFragmentButton);
+    Button buttonA = (Button) getView().findViewById(R.id.dialogChoiceButtonA);
+    Button buttonB = (Button) getView().findViewById(R.id.dialogChoiceButtonB);
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        //button.setOnClickListener();
+        //buttonA.setOnClickListener();
+        //buttonB.setOnClickListener();
 
         return inflater.inflate(R.layout.fragment_dialog_msg, container, false);
     }

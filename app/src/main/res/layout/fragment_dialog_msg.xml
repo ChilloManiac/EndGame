@@ -5,10 +5,10 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/dialogFragmentButton"
+        android:id="@+id/dialogMsgButton"
         android:layout_width="80dip"
         android:layout_height="40dip"
-        android:text="@string/dialogFragmentButtonText"
+        android:text="@string/dialogMsgButtonText"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
 
@@ -17,7 +17,7 @@
         android:layout_width="fill_parent"
         android:layout_height="40dip"
         android:textSize="32sp"
-        android:layout_toEndOf="@+id/dialogFragmentButton"
+        android:layout_toEndOf="@+id/dialogMsgButton"
         android:text="Waiting..."
         android:layout_alignParentTop="true">
     </TextView>
