@@ -15,6 +15,15 @@ public class JoinActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join);
 
+        final Button submitButton = (Button) findViewById(R.id.join_submit_button);
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent changeActivity = new Intent(JoinActivity.this, DialogActivity.class);
+                JoinActivity.this.startActivity(changeActivity);
+            }
+        });
+
         final Button backButton = (Button) findViewById(R.id.join_back_button);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
