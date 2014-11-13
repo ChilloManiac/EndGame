@@ -10,6 +10,8 @@
     <string name="title_activity_join">JoinActivity</string>
     <string name="dialogMsgButtonText">OK</string>
     <string name="title_activity_instructions">InstructionsActivity</string>
+    <string name="title_activity_game">GameActivity</string>
+    <string name="title_activity_dialog">DialogActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="instruction_string">TODO: FILL THIS \n STUFF</string>
     <string name="hosting_title">Hosting...</string>

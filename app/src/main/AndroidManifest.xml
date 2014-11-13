@@ -6,7 +6,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/Theme.AppCompat" >
         <activity
             android:name="com.example.chris_000.endgame.InitActivity"
             android:label="@string/title_activity_init" >
@@ -27,6 +27,14 @@
         <activity
             android:name="com.example.chris_000.endgame.InstructionsActivity"
             android:label="@string/title_activity_instructions" >
+        </activity>
+        <activity
+            android:name="com.example.chris_000.endgame.DialogActivity"
+            android:label="@string/title_activity_dialog" >
+        </activity>
+        <activity
+            android:name="com.example.chris_000.endgame.GameActivity"
+            android:label="@string/title_activity_game" >
         </activity>
     </application>
 
