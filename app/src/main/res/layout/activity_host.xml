@@ -30,7 +30,7 @@
         android:inputType="none"
         android:textIsSelectable="true"
         android:text="thisisrandomcode"
-        android:id="@+id/editText"
+        android:id="@+id/HosteditText"
         android:layout_gravity="center_horizontal" />
 
     <Button
