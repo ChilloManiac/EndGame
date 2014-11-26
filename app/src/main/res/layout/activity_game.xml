@@ -32,6 +32,6 @@
         android:id="@+id/gameImageView"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="80dp"
-        android:src="@drawable/img_arrow"/>
+        android:src="@drawable/arrow"/>
 
 </LinearLayout>
