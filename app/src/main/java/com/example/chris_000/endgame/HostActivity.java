@@ -7,14 +7,23 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URL;
+import java.util.concurrent.ExecutionException;
+
 
 public class HostActivity extends Activity implements LocationListener{
+
+    ServerHandler server;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +51,25 @@ public class HostActivity extends Activity implements LocationListener{
 
         // Request location updates
         locationManager.requestLocationUpdates(locationProvider, 0, 0, this);
+
+
+        String gameName = "";
+        /*
+        try {
+            gameName = hostJson.getString("NAME");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }*/
+        EditText HostEditText = (EditText)findViewById(R.id.HosteditText);
+        try {
+            HostEditText.setText(new getHostName().execute().get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     @Override
@@ -59,8 +87,8 @@ public class HostActivity extends Activity implements LocationListener{
             LocationHandler locationHandler = new LocationHandler();
             String lastLocationString = LocationHandler.locationStringFromLocation(location);
 
-            EditText HostEditText = (EditText)findViewById(R.id.HosteditText); //debug
-            HostEditText.setText(lastLocationString);  //debug
+            //EditText HostEditText = (EditText)findViewById(R.id.HosteditText); //debug
+            //HostEditText.setText(lastLocationString);  //debug
         }
 
         //TODO
@@ -75,4 +103,38 @@ public class HostActivity extends Activity implements LocationListener{
 
     @Override
     public void onProviderDisabled(String provider) {}
+
+    private class getHostName extends AsyncTask<Void, Void, String>
+    {
+        @Override
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(Void... voids)
+        {
+            server = new ServerHandler();
+            JSONObject hostJson = null;
+            try {
+                hostJson = server.hostGame();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try {
+                return hostJson.getString("NAME");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return "Error";
+
+        }
+
+    }
+
+
+
+
 }
