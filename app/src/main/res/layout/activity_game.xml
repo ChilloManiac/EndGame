@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:id="@+id/activityGameLayout"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:weightSum="1">
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -17,5 +18,20 @@
         android:text="did'nt work..."
         android:id="@+id/gameTextView"
         android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="null"
+        android:id="@+id/gameDegrees"
+        android:layout_gravity="center_horizontal" />
+
+    <ImageView
+        android:layout_width="322dp"
+        android:layout_height="322dp"
+        android:id="@+id/gameImageView"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="80dp"
+        android:src="@drawable/img_arrow"/>
 
 </LinearLayout>
