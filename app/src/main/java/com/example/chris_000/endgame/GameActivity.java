@@ -169,7 +169,6 @@ public class GameActivity extends Activity implements LocationListener, SensorEv
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // not in use
     }
 
     @Override
