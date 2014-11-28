@@ -27,6 +27,14 @@ public class HostActivity extends Activity implements LocationListener{
 
     ServerHandler server;
     String gameName = "";
+    Thread joinThread;
+    Location currLoc;
+    private Thread createThread;
+
+    public void setEditText(String set) {
+        EditText HostEditText = (EditText)findViewById(R.id.HosteditText);
+        HostEditText.setText(set);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,59 +63,69 @@ public class HostActivity extends Activity implements LocationListener{
         // Request location updates
         locationManager.requestLocationUpdates(locationProvider, 0, 0, this);
 
-        EditText HostEditText = (EditText)findViewById(R.id.HosteditText);
-        try {
-            HostEditText.setText(new getHostName().execute().get());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+
+
+        Runnable createRunnable = new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    while (currLoc == null) {
+                        Thread.sleep(1000);
+                    }
+                    setEditText(new getHostName().execute().get());
+
+                } catch (InterruptedException e) {
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        runOnUiThread(createRunnable);
 
         Runnable joinRunnable = new Runnable() {
             @Override
             public void run() {
                 try {
+
                     while(new getJoined().execute().get() != 1) {
                         Thread.sleep(5000);
                     }
                     Intent changeActivity = new Intent(HostActivity.this, DialogActivity.class);
                     HostActivity.this.startActivity(changeActivity);
 
+
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
             }
         };
-        Thread joinThread = new Thread(joinRunnable);
+        joinThread = new Thread(joinRunnable);
         joinThread.start();
 
     }
 
     @Override
-    public void onLocationChanged(Location location) {
-        if (location != null) {
-            Log.v("Location Changed", location.getLatitude() + " " + location.getLongitude());
-        }
+    protected void onPause() {
+        super.onPause();
+        joinThread.interrupt();
+    }
 
-        if (location == null) {
-            Log.v("Failed","Location is null");
-        }
+    @Override
+    public void onLocationChanged(Location location) {
 
         //Convert location to string
         if (location != null) {
-            LocationHandler locationHandler = new LocationHandler();
-            String lastLocationString = LocationHandler.locationStringFromLocation(location);
-
-            //EditText HostEditText = (EditText)findViewById(R.id.HosteditText); //debug
-            //HostEditText.setText(lastLocationString);  //debug
+            currLoc = location;
         }
 
         //TODO
         //Send location to server.
     }
+
+
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {}
@@ -133,6 +151,9 @@ public class HostActivity extends Activity implements LocationListener{
             server = new ServerHandler();
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("tag","create"));
+            params.add(new BasicNameValuePair("lat",String.valueOf(currLoc.getLatitude())));
+            params.add(new BasicNameValuePair("lon",String.valueOf(currLoc.getLongitude())));
+            Log.i("Location",params.toString());
             JSONObject hostJson = null;
             try {
                 hostJson = server.connect(params);
@@ -172,8 +193,7 @@ public class HostActivity extends Activity implements LocationListener{
             params.add(new BasicNameValuePair("name",gameName));
             JSONArray hostJson = null;
             try {
-                    hostJson = server.connectArray(params);
-
+                hostJson = server.connectArray(params);
             } catch (Exception e) {
                 e.printStackTrace();
             }
