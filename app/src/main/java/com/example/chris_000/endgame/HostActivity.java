@@ -1,9 +1,7 @@
 package com.example.chris_000.endgame;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -14,16 +12,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 
 public class HostActivity extends Activity implements LocationListener{
 
     ServerHandler server;
+    String gameName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,14 +55,6 @@ public class HostActivity extends Activity implements LocationListener{
         // Request location updates
         locationManager.requestLocationUpdates(locationProvider, 0, 0, this);
 
-
-        String gameName = "";
-        /*
-        try {
-            gameName = hostJson.getString("NAME");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/
         EditText HostEditText = (EditText)findViewById(R.id.HosteditText);
         try {
             HostEditText.setText(new getHostName().execute().get());
@@ -69,6 +64,25 @@ public class HostActivity extends Activity implements LocationListener{
             e.printStackTrace();
         }
 
+        Runnable joinRunnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while(new getJoined().execute().get() != 1) {
+                        Thread.sleep(5000);
+                    }
+                    Intent changeActivity = new Intent(HostActivity.this, DialogActivity.class);
+                    HostActivity.this.startActivity(changeActivity);
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        Thread joinThread = new Thread(joinRunnable);
+        joinThread.start();
 
     }
 
@@ -106,6 +120,7 @@ public class HostActivity extends Activity implements LocationListener{
 
     private class getHostName extends AsyncTask<Void, Void, String>
     {
+
         @Override
         protected void onPreExecute()
         {
@@ -116,23 +131,61 @@ public class HostActivity extends Activity implements LocationListener{
         protected String doInBackground(Void... voids)
         {
             server = new ServerHandler();
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("tag","create"));
             JSONObject hostJson = null;
             try {
-                hostJson = server.hostGame();
+                hostJson = server.connect(params);
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             try {
-                return hostJson.getString("NAME");
-            } catch (JSONException e) {
-                e.printStackTrace();
+                gameName = hostJson.getString("NAME");
+                return gameName;
+            } catch (Exception e) {
+                return "Error";
             }
-            return "Error";
 
         }
+        @Override
+        protected void onPostExecute(String results) {
 
+        };
     }
+
+    private class getJoined extends AsyncTask<Void, Void, Integer>
+    {
+
+        @Override
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Integer doInBackground(Void... voids)
+        {
+            server = new ServerHandler();
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("tag","getJoined"));
+            params.add(new BasicNameValuePair("name",gameName));
+            JSONArray hostJson = null;
+            try {
+                    hostJson = server.connectArray(params);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try {
+                return hostJson.getJSONObject(0).getInt("Player2_Joined");
+            } catch (Exception e) {
+                return 0;
+            }
+        }
+    }
+
 
 
 

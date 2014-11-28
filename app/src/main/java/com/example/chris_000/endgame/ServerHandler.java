@@ -11,6 +11,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,19 +37,14 @@ public class ServerHandler {
         URLString = url;
     }
 
-    public JSONObject hostGame() {
+    public JSONObject connect(List<NameValuePair> params) {
         HttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(URLString);
-        Log.i("Server",URLString);
         HttpResponse response = null;
 
         try {
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-            nameValuePairs.add(new BasicNameValuePair("tag", "create"));
-            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
+            httpPost.setEntity(new UrlEncodedFormEntity(params));
             response = httpClient.execute(httpPost);
-            Log.i("Server","response gotten");
 
 
         } catch (ClientProtocolException e) {
@@ -60,7 +56,6 @@ public class ServerHandler {
         InputStream is = null;
         try {
             is = response.getEntity().getContent();
-            Log.i("Server","inputstream found");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -77,7 +72,6 @@ public class ServerHandler {
             }
             is.close();
             res = sb.toString();
-            Log.i("Server", "read the http: " + res);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -86,12 +80,61 @@ public class ServerHandler {
         JSONObject jObj = null;
         try {
             jObj = new JSONObject(res);
-            Log.i("Server","Json created: " +  jObj.toString());
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return jObj;
+    }
+
+    public JSONArray connectArray(List<NameValuePair> params) {
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(URLString);
+        HttpResponse response = null;
+
+        try {
+            httpPost.setEntity(new UrlEncodedFormEntity(params));
+            response = httpClient.execute(httpPost);
+
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        InputStream is = null;
+        try {
+            is = response.getEntity().getContent();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String res = null;
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            res = "";
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            is.close();
+            res = sb.toString();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        JSONArray jArr = null;
+        try {
+            jArr = new JSONArray(res);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jArr;
     }
 
 }
