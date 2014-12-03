@@ -107,6 +107,18 @@ public class HostActivity extends Activity implements LocationListener{
 
     }
 
+    private ArrayList<NameValuePair> getLatLon(double lat0, double lon0) {
+        ArrayList res = new ArrayList<NameValuePair>();
+        double dNE = 75;
+        double lat1 = lat0 + dNE/6378137;
+        double lon1 = lon0 + dNE/(6378137*Math.cos(Math.PI*lat0/180));
+        res.add(new BasicNameValuePair("lat0",String.valueOf(lat0)));
+        res.add(new BasicNameValuePair("lat1",String.valueOf(lat1)));
+        res.add(new BasicNameValuePair("lon0",String.valueOf(lon0)));
+        res.add(new BasicNameValuePair("lon1",String.valueOf(lon1)));
+        return res;
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -149,10 +161,8 @@ public class HostActivity extends Activity implements LocationListener{
         protected String doInBackground(Void... voids)
         {
             server = new ServerHandler();
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            List<NameValuePair> params = getLatLon(currLoc.getLatitude(), currLoc.getLongitude());
             params.add(new BasicNameValuePair("tag","create"));
-            params.add(new BasicNameValuePair("lat",String.valueOf(currLoc.getLatitude())));
-            params.add(new BasicNameValuePair("lon",String.valueOf(currLoc.getLongitude())));
             Log.i("Location",params.toString());
             JSONObject hostJson = null;
             try {
@@ -185,12 +195,11 @@ public class HostActivity extends Activity implements LocationListener{
         }
 
         @Override
-        protected Integer doInBackground(Void... voids)
-        {
+        protected Integer doInBackground(Void... voids) {
             server = new ServerHandler();
             List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("tag","getJoined"));
-            params.add(new BasicNameValuePair("name",gameName));
+            params.add(new BasicNameValuePair("tag", "getJoined"));
+            params.add(new BasicNameValuePair("name", gameName));
             JSONArray hostJson = null;
             try {
                 hostJson = server.connectArray(params);
