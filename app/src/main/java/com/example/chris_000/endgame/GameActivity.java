@@ -3,10 +3,6 @@ package com.example.chris_000.endgame;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -23,22 +19,23 @@ import android.widget.TextView;
 import android.widget.PopupWindow;
 
 
-
-public class GameActivity extends Activity implements LocationListener, SensorEventListener{
+public class GameActivity extends Activity implements LocationListener {
 
     private ImageView image;
     private float currentDegree = 0f;
-    private SensorManager sensorManager;
     TextView txtDegrees;
 
-    float[] inR = new float[16];
-    float[] I = new float[16];
-    float[] gravity = new float[3];
-    float[] geomag = new float[3];
-    float[] orientVals = new float[3];
+    Location waypoint = new Location("");
 
-    double azimuth = 0;
-    float floatazimuth = 0;
+    float dist = -1;
+    float bearing = 0;
+    float myHeading = 0;
+    float arrow_rotation = 0;
+    float arrow_rotationOld = 0;
+
+    //debug goal
+    double latitude = 56.171986;
+    double longitude = 10.189495;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,33 +67,30 @@ public class GameActivity extends Activity implements LocationListener, SensorEv
             }
         });
 
-        //Setup for location START.
         // Acquire a reference to the system Location Manager
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        //Select gps provider.
         String locationProvider = LocationManager.GPS_PROVIDER;
+
+        //Select best provider.
+        //Criteria criteria = new Criteria();
+        //criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        //String locationProvider = locationManager.getBestProvider(criteria, true);
+
+        // Request location updates
+        locationManager.requestLocationUpdates(locationProvider, 0, 0, this);
 
         // Get last known location
         Location location = locationManager.getLastKnownLocation(locationProvider);
         if(location!=null){
             onLocationChanged(location);
         }
-
-        // Request location updates
-        locationManager.requestLocationUpdates(locationProvider, 0, 0, this);
-        //Setup for location END.
-
-        //Setup for sensor and compass START.
-        image = (ImageView) findViewById(R.id.gameImageView);
-        txtDegrees = (TextView) findViewById(R.id.gameDegrees);
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        //Setup for sensor and compass END.
     }
 
     @Override
-    //Updates GPS location when a new location is registered.
+    //Updates location when a new location is registered.
     public void onLocationChanged(Location location) {
-        Log.v("Location changed","Entered onLocationChanged");
-
         //Convert location to string
         if (location != null) {
             LocationHandler locationHandler = new LocationHandler();
@@ -105,6 +99,52 @@ public class GameActivity extends Activity implements LocationListener, SensorEv
             //Display location (for debug)
             TextView gameTextView = (TextView)findViewById(R.id.gameTextView); //debug
             gameTextView.setText(lastLocationString);  //debug
+
+            waypoint.setLongitude(longitude);    //Cursor is from SimpleCursorAdapter
+            waypoint.setLatitude(latitude);
+            dist = location.distanceTo(waypoint);
+            bearing = location.bearingTo(waypoint);    // -180 to 180
+            myHeading = location.getBearing();         // 0 to 360
+
+            // *** Code to calculate where the arrow should point ***
+            arrow_rotation = (bearing - myHeading) * -1;
+            if(arrow_rotation < 0){
+                arrow_rotation = 180 + (180 + arrow_rotation);
+            }
+
+            Log.i("rotation", Float.toString(arrow_rotation)); //debug
+            Log.i("distance", Float.toString(dist)); //debug
+
+            //Animate compass with bearing to the waypoint.
+            RotateAnimation ra = new RotateAnimation(currentDegree, -arrow_rotation,
+                    Animation.RELATIVE_TO_SELF, 0.5f,
+                    Animation.RELATIVE_TO_SELF, 0.5f);
+
+            // how long the animation will take place
+            ra.setDuration(210);
+
+            // set the animation after the end of the reservation status
+            ra.setFillAfter(true);
+
+
+            // ImageView reference.
+            image = (ImageView) findViewById(R.id.gameImageView);
+            // Start the animation
+            image.startAnimation(ra);
+
+            Log.i("currentDegree", Float.toString(currentDegree));
+            Log.i("-arrow_rotation", Float.toString(-arrow_rotation));
+
+            currentDegree = -arrow_rotation;
+
+            //Update old azimuth value
+            arrow_rotationOld = arrow_rotation;
+
+            //debug
+            //TextView reference.
+            txtDegrees = (TextView) findViewById(R.id.gameDegrees);
+            txtDegrees.setText("Waypoint bearing: " +String.valueOf(arrow_rotation) + " degrees, "
+            + String.valueOf(dist) + "m");
         }
     }
 
@@ -116,77 +156,13 @@ public class GameActivity extends Activity implements LocationListener, SensorEv
     public void onProviderDisabled(String provider) {}
 
     @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
-        if (sensorEvent.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE)
-            return;
-
-        // Gets the value of the sensor that has been changed
-        switch (sensorEvent.sensor.getType()) {
-            case Sensor.TYPE_ACCELEROMETER:
-                gravity = sensorEvent.values.clone();
-                break;
-            case Sensor.TYPE_MAGNETIC_FIELD:
-                geomag = sensorEvent.values.clone();
-                break;
-        }
-
-        //If values are not null, then calculate the azimuth
-        if (gravity != null && geomag != null) {
-            //Create rotation matrix.
-            boolean success = SensorManager.getRotationMatrix(inR, I, gravity, geomag);
-
-            if (success) {
-                //Use rotation matrix to calculate orientation.
-                SensorManager.getOrientation(inR, orientVals);
-                //Convert azimuth to degrees.
-                azimuth = Math.toDegrees(orientVals[0]);
-            }
-        }
-
-        //Typecast to float for use in animations.
-        floatazimuth = (float)azimuth;
-
-        txtDegrees.setText("Heading: " + Float.toString(floatazimuth) + " degrees");
-
-        //Create a rotation animation (reverse turn degree degrees)
-        RotateAnimation ra = new RotateAnimation(
-                currentDegree,
-                -floatazimuth,
-                Animation.RELATIVE_TO_SELF, 0.5f,
-                Animation.RELATIVE_TO_SELF,
-                0.5f);
-
-        // how long the animation will take place
-        ra.setDuration(210);
-
-        // set the animation after the end of the reservation status
-        ra.setFillAfter(true);
-
-        // Start the animation
-        image.startAnimation(ra);
-        currentDegree = -floatazimuth;
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        // for the system's orientation sensor registered listeners
-        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-                SensorManager.SENSOR_DELAY_NORMAL);
-        // ...and the orientation sensor
-        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
-                SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        // to stop the listener and save battery
-        sensorManager.unregisterListener(this);
     }
 }
 
