@@ -38,8 +38,11 @@ public class HostActivity extends Activity implements LocationListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("Crashandburn","1");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_host);
+
+        Log.d("Crashandburn","2");
 
         final Button hostButton = (Button) findViewById(R.id.host_back_button);
         hostButton.setOnClickListener(new View.OnClickListener() {
@@ -50,40 +53,51 @@ public class HostActivity extends Activity implements LocationListener{
             }
         });
 
+        Log.d("Crashandburn","3");
+
         // Acquire a reference to the system Location Manager
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         String locationProvider = LocationManager.GPS_PROVIDER;
 
+        Log.d("Crashandburn","4");
         // Get last known location
         Location location = locationManager.getLastKnownLocation(locationProvider);
         if(location!=null){
             onLocationChanged(location);
+        }else{
+            onLocationChanged(LocationHandler.getLastKnownLocation(locationManager));
         }
+        Log.d("Crashandburn","5");
 
         // Request location updates
         locationManager.requestLocationUpdates(locationProvider, 0, 0, this);
-
+        Log.d("Crashandburn","6");
 
 
         Runnable createRunnable = new Runnable() {
 
             @Override
             public void run() {
-                try {
-                    while (currLoc == null) {
-                        Thread.sleep(1000);
+                if(currLoc == null) {
+                    setEditText("No Connection to GPS");
+                }
+                else {
+                    try {
+                        setEditText(new getHostName().execute().get());
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
                     }
-                    setEditText(new getHostName().execute().get());
-
-                } catch (InterruptedException e) {
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
                 }
             }
         };
 
+        Log.d("Crashandburn","7");
+
         runOnUiThread(createRunnable);
 
+        Log.d("Crashandburn","8");
         Runnable joinRunnable = new Runnable() {
             @Override
             public void run() {
@@ -102,9 +116,10 @@ public class HostActivity extends Activity implements LocationListener{
                 }
             }
         };
+        Log.d("Crashandburn","9");
         joinThread = new Thread(joinRunnable);
         joinThread.start();
-
+        Log.d("Crashandburn","10");
     }
 
     private ArrayList<NameValuePair> getLatLon(double lat0, double lon0) {
@@ -133,7 +148,6 @@ public class HostActivity extends Activity implements LocationListener{
             currLoc = location;
         }
 
-        //TODO
         //Send location to server.
     }
 
