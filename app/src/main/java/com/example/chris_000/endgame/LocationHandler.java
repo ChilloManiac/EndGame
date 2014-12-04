@@ -19,6 +19,7 @@ public class LocationHandler {
                 + Location.convert(location.getLongitude(), Location.FORMAT_DEGREES);
     }
 
+
     //Calculate angle between two coordinates (offset for compass)
     /* Not in use!
     public float angleFromCoordinate(double lat1, double long1, double lat2, double long2) {

@@ -18,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.PopupWindow;
 
+import java.util.ArrayList;
+
 
 public class GameActivity extends Activity implements LocationListener {
 
@@ -32,6 +34,7 @@ public class GameActivity extends Activity implements LocationListener {
     float myHeading = 0;
     float arrow_rotation = 0;
     float arrow_rotationOld = 0;
+    ArrayList<FieldPoint> field = null;
 
     //debug goal
     double latitude = 56.171986;
@@ -42,6 +45,10 @@ public class GameActivity extends Activity implements LocationListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            field = (ArrayList<FieldPoint>) extras.get("field");
+        }
 
         Button debugWin = (Button) findViewById(R.id.ActivityGameDebugWin);
         debugWin.setOnClickListener(new View.OnClickListener() {
@@ -49,11 +56,13 @@ public class GameActivity extends Activity implements LocationListener {
             public void onClick(View view) {
                 LayoutInflater inflater = (LayoutInflater) GameActivity.this
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
                 // Setup for popup window
                 View popupView = inflater.inflate(R.layout.popup_view, null, false);
                 final PopupWindow pw = new PopupWindow(popupView);
-
                 pw.showAtLocation(findViewById(R.id.activityGameLayout), Gravity.CENTER, 0, 0);
+                pw.update(0, 0, 1000, 1000);
+
                 Button close = (Button) popupView.findViewById(R.id.popUpButton);
                 close.setOnClickListener(new View.OnClickListener() {
                     //onClick listener for popup window
@@ -63,7 +72,6 @@ public class GameActivity extends Activity implements LocationListener {
                         GameActivity.this.startActivity(changeActivity);
                     }
                 });
-
             }
         });
 
@@ -73,11 +81,6 @@ public class GameActivity extends Activity implements LocationListener {
         //Select gps provider.
         String locationProvider = LocationManager.GPS_PROVIDER;
 
-        //Select best provider.
-        //Criteria criteria = new Criteria();
-        //criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        //String locationProvider = locationManager.getBestProvider(criteria, true);
-
         // Request location updates
         locationManager.requestLocationUpdates(locationProvider, 0, 0, this);
 
@@ -85,6 +88,8 @@ public class GameActivity extends Activity implements LocationListener {
         Location location = locationManager.getLastKnownLocation(locationProvider);
         if(location!=null){
             onLocationChanged(location);
+        }else{
+            onLocationChanged(LocationHandler.getLastKnownLocation(locationManager));
         }
     }
 
@@ -92,9 +97,31 @@ public class GameActivity extends Activity implements LocationListener {
     //Updates location when a new location is registered.
     public void onLocationChanged(Location location) {
         //Convert location to string
+        Location locationPoint = null;
+
         if (location != null) {
             LocationHandler locationHandler = new LocationHandler();
-            String lastLocationString = LocationHandler.locationStringFromLocation(location);
+            String lastLocationString = locationHandler.locationStringFromLocation(location);
+
+            //Check location in relation to field points
+            if (field != null) {
+                for (FieldPoint fp :  field) {
+                    locationPoint.setLatitude(fp.getLatitude());
+                    locationPoint.setLongitude(fp.getLongitude());
+                    //Check distance between current location and
+                    double dist = locationPoint.distanceTo(location);
+
+                    if(dist <= 3){
+                        //todo dothethings
+                    }
+                }
+            }
+
+            //check proximity to any field location
+            //dostuff according to type, if prox is 5m or lower
+            //make arrow red
+
+
 
             //Display location (for debug)
             TextView gameTextView = (TextView)findViewById(R.id.gameTextView); //debug
@@ -106,7 +133,7 @@ public class GameActivity extends Activity implements LocationListener {
             bearing = location.bearingTo(waypoint);    // -180 to 180
             myHeading = location.getBearing();         // 0 to 360
 
-            // *** Code to calculate where the arrow should point ***
+            // Calculate where the arrow should point
             arrow_rotation = (bearing - myHeading) * -1;
             if(arrow_rotation < 0){
                 arrow_rotation = 180 + (180 + arrow_rotation);
@@ -126,14 +153,13 @@ public class GameActivity extends Activity implements LocationListener {
             // set the animation after the end of the reservation status
             ra.setFillAfter(true);
 
-
             // ImageView reference.
             image = (ImageView) findViewById(R.id.gameImageView);
             // Start the animation
             image.startAnimation(ra);
 
-            Log.i("currentDegree", Float.toString(currentDegree));
-            Log.i("-arrow_rotation", Float.toString(-arrow_rotation));
+            Log.i("currentDegree", Float.toString(currentDegree)); //debug
+            Log.i("-arrow_rotation", Float.toString(-arrow_rotation)); //debug
 
             currentDegree = -arrow_rotation;
 
