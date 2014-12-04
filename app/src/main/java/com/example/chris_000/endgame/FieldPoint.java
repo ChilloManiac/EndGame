@@ -22,6 +22,14 @@ public class FieldPoint implements Serializable {
         return status;
     }
 
+    public Double getLatitude() {
+        return lat;
+    }
+
+    public Double getLongitude() {
+        return lon;
+    }
+
     @Override
     public String toString() {
         return lat + " : " + lon  + " : " + status;
