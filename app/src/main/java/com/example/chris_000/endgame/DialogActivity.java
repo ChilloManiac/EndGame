@@ -5,6 +5,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class DialogActivity extends FragmentActivity {
 
     private FragmentTransaction transaction;
@@ -15,6 +17,11 @@ public class DialogActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialog);
+        Bundle extras = getIntent().getExtras();
+        ArrayList<FieldPoint> field = null;
+        if (extras != null) {
+            field = (ArrayList<FieldPoint>) extras.get("field");
+        }
 
         if (findViewById(R.id.dialogLayoutFrame) != null) {
             if (savedInstanceState != null) {
@@ -27,8 +34,15 @@ public class DialogActivity extends FragmentActivity {
         }
 
         dialog1 = "Test test. \nBlaBalalablablabla.\nBla!";
-        TextView textView = (TextView)findViewById(R.id.TextViewDialog);
+        TextView textView = (TextView) findViewById(R.id.TextViewDialog);
         textView.setText(dialog1);
+
+        if (field != null) {
+            textView.setText("");
+            for (FieldPoint fp :  field) {
+                textView.append(fp.toString()+ "\n");
+            }
+        }
 
     }
 
