@@ -12,13 +12,13 @@ public class DialogActivity extends FragmentActivity {
     private FragmentTransaction transaction;
     private android.support.v4.app.Fragment DialogMsgFragment;
     private String dialog1;
+    private ArrayList<FieldPoint> field = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialog);
         Bundle extras = getIntent().getExtras();
-        ArrayList<FieldPoint> field = null;
         if (extras != null) {
             field = (ArrayList<FieldPoint>) extras.get("field");
         }
