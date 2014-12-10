@@ -3,6 +3,8 @@ package com.example.chris_000.endgame;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,7 +22,6 @@ import android.widget.PopupWindow;
 
 import java.util.ArrayList;
 
-
 public class GameActivity extends Activity implements LocationListener {
 
     private ImageView image;
@@ -36,20 +37,26 @@ public class GameActivity extends Activity implements LocationListener {
     float arrow_rotationOld = 0;
     ArrayList<FieldPoint> field = null;
 
-    //debug goal
-    double latitude = 56.171986;
-    double longitude = 10.189495;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        //get playing field points
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             field = (ArrayList<FieldPoint>) extras.get("field");
         }
 
+        //get waypoint for end goal
+        for (FieldPoint fp :  field) {
+            if(fp.getStatus() == FieldPointType.PRIMARY_GOAL){
+                waypoint.setLongitude(fp.getLongitude());
+                waypoint.setLatitude(fp.getLatitude());
+            }
+        }
+
+        // *** temp debug win button ***
         Button debugWin = (Button) findViewById(R.id.ActivityGameDebugWin);
         debugWin.setOnClickListener(new View.OnClickListener() {
 
@@ -74,6 +81,7 @@ public class GameActivity extends Activity implements LocationListener {
                 });
             }
         });
+        // *** temp debug win button ***
 
         // Acquire a reference to the system Location Manager
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -91,6 +99,10 @@ public class GameActivity extends Activity implements LocationListener {
         }else{
             onLocationChanged(LocationHandler.getLastKnownLocation(locationManager));
         }
+
+        // ImageView reference.
+        image = (ImageView) findViewById(R.id.gameImageView);
+        image.getDrawable().setColorFilter(Color.BLUE, PorterDuff.Mode.MULTIPLY);
     }
 
     @Override
@@ -112,23 +124,45 @@ public class GameActivity extends Activity implements LocationListener {
                     double dist = locationPoint.distanceTo(location);
 
                     if(dist <= 3){
-                        //todo dothethings
+                        if(fp.getStatus() == FieldPointType.DANGERZONE){
+                            image.getDrawable().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+                        }
+                        else image.getDrawable().setColorFilter(Color.BLUE, PorterDuff.Mode.MULTIPLY);
+
+                        if(fp.getStatus() == FieldPointType.PRIMARY_GOAL){
+                            //todo tell server i won.
+
+
+                            //I won, display victory popup window, and switch to dialogActivity
+                            LayoutInflater inflater = (LayoutInflater) GameActivity.this
+                                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+                            // Setup for popup window
+                            View popupView = inflater.inflate(R.layout.popup_view, null, false);
+                            final PopupWindow pw = new PopupWindow(popupView);
+                            pw.showAtLocation(findViewById(R.id.activityGameLayout), Gravity.CENTER, 0, 0);
+                            pw.update(0, 0, 1000, 1000);
+
+                            Button close = (Button) popupView.findViewById(R.id.popUpButton);
+                            close.setOnClickListener(new View.OnClickListener() {
+                                //onClick listener for popup window
+                                public void onClick(View popupView) {
+                                    pw.dismiss();
+                                    Intent changeActivity = new Intent(GameActivity.this, DialogActivity.class);
+                                    boolean iWon = true;
+                                    changeActivity.putExtra("iWon",iWon);
+                                    GameActivity.this.startActivity(changeActivity);
+                                }
+                            });
+                        }
                     }
                 }
             }
-
-            //check proximity to any field location
-            //dostuff according to type, if prox is 5m or lower
-            //make arrow red
-
-
 
             //Display location (for debug)
             TextView gameTextView = (TextView)findViewById(R.id.gameTextView); //debug
             gameTextView.setText(lastLocationString);  //debug
 
-            waypoint.setLongitude(longitude);    //Cursor is from SimpleCursorAdapter
-            waypoint.setLatitude(latitude);
             dist = location.distanceTo(waypoint);
             bearing = location.bearingTo(waypoint);    // -180 to 180
             myHeading = location.getBearing();         // 0 to 360
@@ -153,8 +187,6 @@ public class GameActivity extends Activity implements LocationListener {
             // set the animation after the end of the reservation status
             ra.setFillAfter(true);
 
-            // ImageView reference.
-            image = (ImageView) findViewById(R.id.gameImageView);
             // Start the animation
             image.startAnimation(ra);
 
