@@ -28,8 +28,10 @@ public class DialogActivity extends FragmentActivity {
                 return;
             }
             DialogMsgFragment = new DialogMsgFragment();
+            DialogMsgFragment.setArguments(extras);
             //DialogMsgFragment.setArguments(getIntent().getExtras());
             transaction = getSupportFragmentManager().beginTransaction();
+
             transaction.add(R.id.dialogLayoutFrame, DialogMsgFragment).commit();
         }
 

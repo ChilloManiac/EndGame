@@ -8,9 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import java.util.ArrayList;
+
+
 
 public class DialogMsgFragment extends Fragment {
 
+
+    private ArrayList<FieldPoint> field;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -18,15 +23,18 @@ public class DialogMsgFragment extends Fragment {
 
         return inflater.inflate(R.layout.fragment_dialog_msg, container, false);
 
+
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        field = (ArrayList<FieldPoint>) getArguments().get("field");
         Button buttonMsg = (Button) getView().findViewById(R.id.dialogMsgButton);
         buttonMsg.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
                 Intent changeActivity = new Intent(getActivity(), GameActivity.class);
+                changeActivity.putExtra("field",field);
                 startActivity(changeActivity);
             }
         });
