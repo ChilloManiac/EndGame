@@ -8,6 +8,7 @@ import android.graphics.PorterDuff;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -20,7 +21,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.PopupWindow;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class GameActivity extends Activity implements LocationListener {
 
@@ -36,6 +43,9 @@ public class GameActivity extends Activity implements LocationListener {
     float arrow_rotation = 0;
     float arrow_rotationOld = 0;
     ArrayList<FieldPoint> field = null;
+    private ServerHandler server;
+    private String gameName;
+    private String player;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +56,8 @@ public class GameActivity extends Activity implements LocationListener {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             field = (ArrayList<FieldPoint>) extras.get("field");
+            gameName = (String) extras.get("name");
+            player = (String) extras.get("player");
         }
 
         //get waypoint for end goal
@@ -81,7 +93,11 @@ public class GameActivity extends Activity implements LocationListener {
                 });
             }
         });
-        // *** temp debug win button ***
+
+
+        // ImageView reference.
+        image = (ImageView) findViewById(R.id.gameImageView);
+        image.getDrawable().setColorFilter(Color.BLUE, PorterDuff.Mode.MULTIPLY);
 
         // Acquire a reference to the system Location Manager
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -100,16 +116,38 @@ public class GameActivity extends Activity implements LocationListener {
             onLocationChanged(LocationHandler.getLastKnownLocation(locationManager));
         }
 
-        // ImageView reference.
-        image = (ImageView) findViewById(R.id.gameImageView);
-        image.getDrawable().setColorFilter(Color.BLUE, PorterDuff.Mode.MULTIPLY);
+
+
+        Runnable wonRunnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while(new getWon().execute().get() != 1) {
+                        Thread.sleep(2000);
+                    }
+                    Intent changeActivity = new Intent(GameActivity.this, DialogActivity.class);
+                    changeActivity.putExtra("name",gameName);
+                    changeActivity.putExtra("won", false);
+                    GameActivity.this.startActivity(changeActivity);
+
+                } catch (InterruptedException e) {
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        Thread wonThread = new Thread(wonRunnable);
+        wonThread.start();
+
+
     }
 
     @Override
     //Updates location when a new location is registered.
     public void onLocationChanged(Location location) {
         //Convert location to string
-        Location locationPoint = null;
+        Location locationPoint = new Location("");
 
         if (location != null) {
             LocationHandler locationHandler = new LocationHandler();
@@ -149,8 +187,8 @@ public class GameActivity extends Activity implements LocationListener {
                                 public void onClick(View popupView) {
                                     pw.dismiss();
                                     Intent changeActivity = new Intent(GameActivity.this, DialogActivity.class);
-                                    boolean iWon = true;
-                                    changeActivity.putExtra("iWon",iWon);
+                                    changeActivity.putExtra("won",true);
+                                    changeActivity.putExtra("name",gameName);
                                     GameActivity.this.startActivity(changeActivity);
                                 }
                             });
@@ -221,6 +259,44 @@ public class GameActivity extends Activity implements LocationListener {
     @Override
     protected void onPause() {
         super.onPause();
+    }
+
+    private class getWon extends AsyncTask<Void, Void, Integer>
+    {
+
+        @Override
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            server = new ServerHandler();
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("tag", "getWon"));
+            params.add(new BasicNameValuePair("name", gameName));
+            String opponent = "";
+            if(player.equals("player1")) {
+                opponent = "player2";
+            } else if(player.equals("player2")) {
+                opponent = "player1";
+            }
+            params.add(new BasicNameValuePair("player", opponent));
+            Log.i("FIELDFIELDFIELD", params.toString());
+            JSONArray hostJson = null;
+            try {
+                hostJson = server.connectArray(params);
+            } catch (Exception e) {
+                return 0;
+            }
+
+            try {
+                return hostJson.getJSONObject(0).getInt(opponent);
+            } catch (Exception e) {
+                return 0;
+            }
+        }
     }
 }
 

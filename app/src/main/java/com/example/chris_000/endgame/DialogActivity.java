@@ -13,6 +13,7 @@ public class DialogActivity extends FragmentActivity {
     private android.support.v4.app.Fragment DialogMsgFragment;
     private String dialog1;
     private ArrayList<FieldPoint> field = null;
+    private Boolean iWon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +22,7 @@ public class DialogActivity extends FragmentActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             field = (ArrayList<FieldPoint>) extras.get("field");
+            iWon = (Boolean) extras.get("won");
         }
 
         if (findViewById(R.id.dialogLayoutFrame) != null) {
@@ -44,6 +46,9 @@ public class DialogActivity extends FragmentActivity {
             for (FieldPoint fp :  field) {
                 textView.append(fp.toString()+ "\n");
             }
+        }
+        if (iWon != null) {
+            textView.setText(iWon.toString());
         }
 
     }

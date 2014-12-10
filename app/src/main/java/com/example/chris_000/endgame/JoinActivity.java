@@ -103,6 +103,8 @@ public class JoinActivity extends Activity {
 
                 Intent changeActivity = new Intent(JoinActivity.this, DialogActivity.class);
                 changeActivity.putExtra("field",field);
+                changeActivity.putExtra("name",gameName);
+                changeActivity.putExtra("player","player2");
                 JoinActivity.this.startActivity(changeActivity);
 
 

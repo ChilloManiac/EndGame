@@ -16,6 +16,8 @@ public class DialogMsgFragment extends Fragment {
 
 
     private ArrayList<FieldPoint> field;
+    private String gameName;
+    private String player;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -29,12 +31,17 @@ public class DialogMsgFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         field = (ArrayList<FieldPoint>) getArguments().get("field");
+        gameName = (String) getArguments().get("name");
+        player = (String) getArguments().get("player");
+
         Button buttonMsg = (Button) getView().findViewById(R.id.dialogMsgButton);
         buttonMsg.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
                 Intent changeActivity = new Intent(getActivity(), GameActivity.class);
                 changeActivity.putExtra("field",field);
+                changeActivity.putExtra("name",gameName);
+                changeActivity.putExtra("player",player);
                 startActivity(changeActivity);
             }
         });

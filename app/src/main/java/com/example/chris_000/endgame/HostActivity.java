@@ -112,15 +112,15 @@ public class HostActivity extends Activity implements LocationListener{
                             Integer status = json.getJSONObject(i).getInt("STATUS");
                             switch (status) {
                                 case 1 : fpt = FieldPointType.DANGERZONE;
-                                        break;
+                                    break;
                                 case 2 : fpt = FieldPointType.PRIMARY_GOAL;
-                                        break;
+                                    break;
                                 case 3 : fpt = FieldPointType.SECONDARY_GOAL;
-                                        break;
+                                    break;
                                 case 4 : fpt = FieldPointType.PLAYER1_START;
-                                        break;
+                                    break;
                                 case 5 : fpt = FieldPointType.PLAYER2_START;
-                                        break;
+                                    break;
                             }
                             FieldPoint fp = new FieldPoint(fpt, lat, lon);
                             field.add(fp);
@@ -129,6 +129,8 @@ public class HostActivity extends Activity implements LocationListener{
 
                     Intent changeActivity = new Intent(HostActivity.this, DialogActivity.class);
                     changeActivity.putExtra("field",field);
+                    changeActivity.putExtra("name",gameName);
+                    changeActivity.putExtra("player", "player1");
                     HostActivity.this.startActivity(changeActivity);
 
 
