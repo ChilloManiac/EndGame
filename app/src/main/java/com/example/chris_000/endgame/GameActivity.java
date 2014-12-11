@@ -91,10 +91,6 @@ public class GameActivity extends Activity implements LocationListener {
             onLocationChanged(LocationHandler.getLastKnownLocation(locationManager));
         }
 
-
-
-
-
         Runnable getWonRunnable = new Runnable() {
             @Override
             public void run() {
@@ -128,7 +124,6 @@ public class GameActivity extends Activity implements LocationListener {
         });
 
     }
-
 
     @Override
     //Updates location when a new location is registered.

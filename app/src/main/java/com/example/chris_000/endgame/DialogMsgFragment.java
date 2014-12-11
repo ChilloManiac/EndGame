@@ -10,8 +10,6 @@ import android.widget.Button;
 
 import java.util.ArrayList;
 
-
-
 public class DialogMsgFragment extends Fragment {
 
 
@@ -29,7 +27,7 @@ public class DialogMsgFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(View view, final Bundle savedInstanceState) {
         field = (ArrayList<FieldPoint>) getArguments().get("field");
         gameName = (String) getArguments().get("name");
         player = (String) getArguments().get("player");

@@ -11,6 +11,7 @@ public class DialogActivity extends FragmentActivity {
 
     private FragmentTransaction transaction;
     private android.support.v4.app.Fragment DialogMsgFragment;
+    private android.support.v4.app.Fragment DialogChoiceFragment;
     private String dialog1;
     private ArrayList<FieldPoint> field = null;
     private Boolean iWon;
@@ -25,16 +26,42 @@ public class DialogActivity extends FragmentActivity {
             iWon = (Boolean) extras.get("won");
         }
 
-        if (findViewById(R.id.dialogLayoutFrame) != null) {
-            if (savedInstanceState != null) {
-                return;
-            }
-            DialogMsgFragment = new DialogMsgFragment();
-            DialogMsgFragment.setArguments(extras);
-            //DialogMsgFragment.setArguments(getIntent().getExtras());
-            transaction = getSupportFragmentManager().beginTransaction();
+        if (iWon != null) {
+            if (findViewById(R.id.dialogLayoutFrame) != null && iWon == false) {
+                if (savedInstanceState != null) {
+                    return;
+                }
+                DialogMsgFragment = new DialogMsgFragment();
+                DialogMsgFragment.setArguments(extras);
+                transaction = getSupportFragmentManager().beginTransaction();
 
-            transaction.add(R.id.dialogLayoutFrame, DialogMsgFragment).commit();
+                transaction.add(R.id.dialogLayoutFrame, DialogMsgFragment).commit();
+            }
+            else if (iWon == true){
+                if (findViewById(R.id.dialogLayoutFrame) != null && iWon == true) {
+                    if (savedInstanceState != null) {
+                        return;
+                    }
+                    DialogChoiceFragment = new DialogChoiceFragment();
+                    DialogChoiceFragment.setArguments(extras);
+                    transaction = getSupportFragmentManager().beginTransaction();
+
+                    transaction.add(R.id.dialogLayoutFrame, DialogChoiceFragment).commit();
+                }
+            }
+        }
+        else {
+            if (findViewById(R.id.dialogLayoutFrame) != null) {
+                if (savedInstanceState != null) {
+                    return;
+                }
+                DialogMsgFragment = new DialogMsgFragment();
+                DialogMsgFragment.setArguments(extras);
+                //DialogMsgFragment.setArguments(getIntent().getExtras());
+                transaction = getSupportFragmentManager().beginTransaction();
+
+                transaction.add(R.id.dialogLayoutFrame, DialogMsgFragment).commit();
+            }
         }
 
         dialog1 = "Test test. \nBlaBalalablablabla.\nBla!";
