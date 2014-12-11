@@ -20,10 +20,7 @@ public class DialogMsgFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         return inflater.inflate(R.layout.fragment_dialog_msg, container, false);
-
-
     }
 
     @Override
@@ -37,9 +34,9 @@ public class DialogMsgFragment extends Fragment {
 
             public void onClick(View view) {
                 Intent changeActivity = new Intent(getActivity(), GameActivity.class);
-                changeActivity.putExtra("field",field);
-                changeActivity.putExtra("name",gameName);
-                changeActivity.putExtra("player",player);
+                changeActivity.putExtra("field", field);
+                changeActivity.putExtra("name", gameName);
+                changeActivity.putExtra("player", player);
                 startActivity(changeActivity);
             }
         });

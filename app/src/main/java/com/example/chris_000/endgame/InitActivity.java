@@ -18,7 +18,7 @@ public class InitActivity extends Activity {
         hostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent changeActivity = new Intent(InitActivity.this,HostActivity.class);
+                Intent changeActivity = new Intent(InitActivity.this, HostActivity.class);
                 InitActivity.this.startActivity(changeActivity);
             }
         });
@@ -27,7 +27,7 @@ public class InitActivity extends Activity {
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent changeActivity = new Intent(InitActivity.this,JoinActivity.class);
+                Intent changeActivity = new Intent(InitActivity.this, JoinActivity.class);
                 InitActivity.this.startActivity(changeActivity);
             }
         });
@@ -36,7 +36,7 @@ public class InitActivity extends Activity {
         instructionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent changeActivity = new Intent(InitActivity.this,InstructionsActivity.class);
+                Intent changeActivity = new Intent(InitActivity.this, InstructionsActivity.class);
                 InitActivity.this.startActivity(changeActivity);
             }
         });

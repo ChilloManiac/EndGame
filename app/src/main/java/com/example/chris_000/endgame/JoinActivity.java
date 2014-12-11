@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,7 +12,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,17 +28,6 @@ public class JoinActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join);
 
-
-
-        final Button backButton = (Button) findViewById(R.id.join_back_button);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent changeActivity = new Intent(JoinActivity.this, DialogActivity.class);
-                JoinActivity.this.startActivity(changeActivity);
-            }
-        });
-
         final EditText codeText = (EditText) findViewById(R.id.editText2);
         codeText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,7 +43,7 @@ public class JoinActivity extends Activity {
                 try {
                     gameName = codeText.getText().toString();
                     Integer res = new joinGame().execute().get();
-                    if(res == 1) {
+                    if (res == 1) {
                         Thread fieldThread = new Thread(getFieldRunnable);
                         fieldThread.start();
                     }
@@ -76,22 +63,27 @@ public class JoinActivity extends Activity {
             try {
                 ArrayList<FieldPoint> field = new ArrayList<FieldPoint>();
                 JSONArray json = new getField().execute().get();
-                if(json != null) {
-                    for(int i = 0; i < json.length(); i++) {
+                if (json != null) {
+                    for (int i = 0; i < json.length(); i++) {
                         Double lat = json.getJSONObject(i).getDouble("LAT");
                         Double lon = json.getJSONObject(i).getDouble("LON");
                         FieldPointType fpt = FieldPointType.EMPTY;
                         Integer status = json.getJSONObject(i).getInt("STATUS");
                         switch (status) {
-                            case 1 : fpt = FieldPointType.DANGERZONE;
+                            case 1:
+                                fpt = FieldPointType.DANGERZONE;
                                 break;
-                            case 2 : fpt = FieldPointType.PRIMARY_GOAL;
+                            case 2:
+                                fpt = FieldPointType.PRIMARY_GOAL;
                                 break;
-                            case 3 : fpt = FieldPointType.SECONDARY_GOAL;
+                            case 3:
+                                fpt = FieldPointType.SECONDARY_GOAL;
                                 break;
-                            case 4 : fpt = FieldPointType.PLAYER1_START;
+                            case 4:
+                                fpt = FieldPointType.PLAYER1_START;
                                 break;
-                            case 5 : fpt = FieldPointType.PLAYER2_START;
+                            case 5:
+                                fpt = FieldPointType.PLAYER2_START;
                                 break;
                         }
                         FieldPoint fp = new FieldPoint(fpt, lat, lon);
@@ -99,14 +91,11 @@ public class JoinActivity extends Activity {
                     }
                 }
 
-                Log.i("Crashandburn", field.toString());
-
                 Intent changeActivity = new Intent(JoinActivity.this, DialogActivity.class);
-                changeActivity.putExtra("field",field);
-                changeActivity.putExtra("name",gameName);
-                changeActivity.putExtra("player","player2");
+                changeActivity.putExtra("field", field);
+                changeActivity.putExtra("name", gameName);
+                changeActivity.putExtra("player", "player2");
                 JoinActivity.this.startActivity(changeActivity);
-
 
 
             } catch (InterruptedException e) {
@@ -118,22 +107,19 @@ public class JoinActivity extends Activity {
         }
     };
 
-    private class joinGame extends AsyncTask<Void, Void, Integer>
-    {
+    private class joinGame extends AsyncTask<Void, Void, Integer> {
 
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             super.onPreExecute();
         }
 
         @Override
-        protected Integer doInBackground(Void... voids)
-        {
+        protected Integer doInBackground(Void... voids) {
             server = new ServerHandler();
             List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("tag","joining"));
-            params.add(new BasicNameValuePair("name",gameName));
+            params.add(new BasicNameValuePair("tag", "joining"));
+            params.add(new BasicNameValuePair("name", gameName));
             JSONArray hostJson = null;
             try {
                 hostJson = server.connectArray(params);
@@ -150,12 +136,10 @@ public class JoinActivity extends Activity {
         }
     }
 
-    private class getField extends AsyncTask<Void, Void, JSONArray>
-    {
+    private class getField extends AsyncTask<Void, Void, JSONArray> {
 
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             super.onPreExecute();
         }
 

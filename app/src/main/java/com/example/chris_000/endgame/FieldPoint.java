@@ -1,12 +1,7 @@
 package com.example.chris_000.endgame;
 
-import android.location.Location;
-
 import java.io.Serializable;
 
-/**
- * Created by Chris_000 on 04-12-2014.
- */
 public class FieldPoint implements Serializable {
     private final Double lon;
     private final Double lat;
@@ -32,7 +27,7 @@ public class FieldPoint implements Serializable {
 
     @Override
     public String toString() {
-        return lat + " : " + lon  + " : " + status;
+        return lat + " : " + lon + " : " + status;
     }
 
 }
