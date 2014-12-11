@@ -18,8 +18,8 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -33,7 +33,9 @@ public class GameActivity extends Activity implements LocationListener {
 
     private ImageView image;
     private float currentDegree = 0f;
-    TextView txtDegrees;
+    private TextView txtDegrees;
+    private LocationManager locationManager;
+    private String locationProvider;
 
     Location waypoint = new Location("");
 
@@ -68,47 +70,20 @@ public class GameActivity extends Activity implements LocationListener {
             }
         }
 
-        // *** temp debug win button ***
-        Button debugWin = (Button) findViewById(R.id.ActivityGameDebugWin);
-        debugWin.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View view) {
-                LayoutInflater inflater = (LayoutInflater) GameActivity.this
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-                // Setup for popup window
-                View popupView = inflater.inflate(R.layout.popup_view, null, false);
-                final PopupWindow pw = new PopupWindow(popupView);
-                pw.showAtLocation(findViewById(R.id.activityGameLayout), Gravity.CENTER, 0, 0);
-                pw.update(0, 0, 1000, 1000);
-
-                Button close = (Button) popupView.findViewById(R.id.popUpButton);
-                close.setOnClickListener(new View.OnClickListener() {
-                    //onClick listener for popup window
-                    public void onClick(View popupView) {
-                        pw.dismiss();
-                        Intent changeActivity = new Intent(GameActivity.this, DialogActivity.class);
-                        GameActivity.this.startActivity(changeActivity);
-                    }
-                });
-            }
-        });
-
 
         // ImageView reference.
         image = (ImageView) findViewById(R.id.gameImageView);
         image.getDrawable().setColorFilter(Color.BLUE, PorterDuff.Mode.MULTIPLY);
 
         // Acquire a reference to the system Location Manager
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         //Select gps provider.
-        String locationProvider = LocationManager.GPS_PROVIDER;
+        locationProvider = LocationManager.GPS_PROVIDER;
 
         // Request location updates
         locationManager.requestLocationUpdates(locationProvider, 0, 0, this);
 
-        // Get last known location
         Location location = locationManager.getLastKnownLocation(locationProvider);
         if(location!=null){
             onLocationChanged(location);
@@ -118,7 +93,9 @@ public class GameActivity extends Activity implements LocationListener {
 
 
 
-        Runnable wonRunnable = new Runnable() {
+
+
+        Runnable getWonRunnable = new Runnable() {
             @Override
             public void run() {
                 try {
@@ -128,6 +105,8 @@ public class GameActivity extends Activity implements LocationListener {
                     Intent changeActivity = new Intent(GameActivity.this, DialogActivity.class);
                     changeActivity.putExtra("name",gameName);
                     changeActivity.putExtra("won", false);
+                    changeActivity.putExtra("field",field);
+                    changeActivity.putExtra("player",player);
                     GameActivity.this.startActivity(changeActivity);
 
                 } catch (InterruptedException e) {
@@ -137,11 +116,19 @@ public class GameActivity extends Activity implements LocationListener {
             }
         };
 
-        Thread wonThread = new Thread(wonRunnable);
+        Thread wonThread = new Thread(getWonRunnable);
         wonThread.start();
 
+        Button debugWin = (Button) findViewById(R.id.ActivityGameDebugWin);
+        debugWin.setOnClickListener(new View.OnClickListener() {
+            //onClick listener for popup window
+            public void onClick(View popupView) {
+                handleIWon();
+            }
+        });
 
     }
+
 
     @Override
     //Updates location when a new location is registered.
@@ -162,36 +149,14 @@ public class GameActivity extends Activity implements LocationListener {
                     double dist = locationPoint.distanceTo(location);
 
                     if(dist <= 3){
+                        Log.i("TESTESTEST",dist + " ; " + fp.getStatus());
                         if(fp.getStatus() == FieldPointType.DANGERZONE){
                             image.getDrawable().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
                         }
                         else image.getDrawable().setColorFilter(Color.BLUE, PorterDuff.Mode.MULTIPLY);
 
                         if(fp.getStatus() == FieldPointType.PRIMARY_GOAL){
-                            //todo tell server i won.
-
-
-                            //I won, display victory popup window, and switch to dialogActivity
-                            LayoutInflater inflater = (LayoutInflater) GameActivity.this
-                                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-                            // Setup for popup window
-                            View popupView = inflater.inflate(R.layout.popup_view, null, false);
-                            final PopupWindow pw = new PopupWindow(popupView);
-                            pw.showAtLocation(findViewById(R.id.activityGameLayout), Gravity.CENTER, 0, 0);
-                            pw.update(0, 0, 1000, 1000);
-
-                            Button close = (Button) popupView.findViewById(R.id.popUpButton);
-                            close.setOnClickListener(new View.OnClickListener() {
-                                //onClick listener for popup window
-                                public void onClick(View popupView) {
-                                    pw.dismiss();
-                                    Intent changeActivity = new Intent(GameActivity.this, DialogActivity.class);
-                                    changeActivity.putExtra("won",true);
-                                    changeActivity.putExtra("name",gameName);
-                                    GameActivity.this.startActivity(changeActivity);
-                                }
-                            });
+                            //handleIWon();
                         }
                     }
                 }
@@ -244,6 +209,34 @@ public class GameActivity extends Activity implements LocationListener {
         }
     }
 
+    private void handleIWon() {
+        new iWon().execute();
+
+        //I won, display victory popup window, and switch to dialogActivity
+        LayoutInflater inflater = (LayoutInflater) GameActivity.this
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        // Setup for popup window
+        View popupView = inflater.inflate(R.layout.popup_view, null, false);
+        final PopupWindow pw = new PopupWindow(popupView);
+        pw.showAtLocation(findViewById(R.id.activityGameLayout), Gravity.CENTER, 0, 0);
+        pw.update(0, 0, 1000, 1000);
+
+        Button close = (Button) popupView.findViewById(R.id.popUpButton);
+        close.setOnClickListener(new View.OnClickListener() {
+            //onClick listener for popup window
+            public void onClick(View popupView) {
+                pw.dismiss();
+                Intent changeActivity = new Intent(GameActivity.this, DialogActivity.class);
+                changeActivity.putExtra("won",true);
+                changeActivity.putExtra("name",gameName);
+                changeActivity.putExtra("field",field);
+                changeActivity.putExtra("player",player);
+                GameActivity.this.startActivity(changeActivity);
+            }
+        });
+    }
+
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {}
     @Override
@@ -261,8 +254,7 @@ public class GameActivity extends Activity implements LocationListener {
         super.onPause();
     }
 
-    private class getWon extends AsyncTask<Void, Void, Integer>
-    {
+    private class getWon extends AsyncTask<Void, Void, Integer> {
 
         @Override
         protected void onPreExecute()
@@ -283,7 +275,6 @@ public class GameActivity extends Activity implements LocationListener {
                 opponent = "player1";
             }
             params.add(new BasicNameValuePair("player", opponent));
-            Log.i("FIELDFIELDFIELD", params.toString());
             JSONArray hostJson = null;
             try {
                 hostJson = server.connectArray(params);
@@ -298,6 +289,34 @@ public class GameActivity extends Activity implements LocationListener {
             }
         }
     }
+
+    private class iWon extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            server = new ServerHandler();
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("tag", "winning"));
+            params.add(new BasicNameValuePair("name", gameName));
+            params.add(new BasicNameValuePair("player", player));
+            JSONArray hostJson = null;
+            try {
+                hostJson = server.connectArray(params);
+            } catch (Exception e) {
+
+            }
+            return null;
+
+
+        }
+    }
+
 }
 
 

@@ -171,8 +171,8 @@ public class HostActivity extends Activity implements LocationListener{
     private ArrayList<NameValuePair> getLatLon(double lat0, double lon0) {
         ArrayList res = new ArrayList<NameValuePair>();
         double dNE = 75;
-        double lat1 = lat0 + dNE/6378137;
-        double lon1 = lon0 + dNE/(6378137*Math.cos(Math.PI*lat0/180));
+        double lat1 = lat0 + dNE/6378137*(180/Math.PI);
+        double lon1 = lon0 + dNE/(6378137*Math.cos(Math.PI*lat0/180))*(180/Math.PI);
         res.add(new BasicNameValuePair("lat0",String.valueOf(lat0)));
         res.add(new BasicNameValuePair("lat1",String.valueOf(lat1)));
         res.add(new BasicNameValuePair("lon0",String.valueOf(lon0)));
