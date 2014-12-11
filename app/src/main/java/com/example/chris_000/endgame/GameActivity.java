@@ -17,6 +17,7 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -133,6 +134,11 @@ public class GameActivity extends Activity implements LocationListener {
                         } else  {
                             image.getDrawable().setColorFilter(Color.BLUE, PorterDuff.Mode.MULTIPLY);
                         }
+                        if (fp.getStatus() == FieldPointType.SECONDARY_GOAL){
+                            image.getDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.MULTIPLY);
+                        } else {
+                            image.getDrawable().setColorFilter(Color.BLUE, PorterDuff.Mode.MULTIPLY);
+                        }
                         if (fp.getStatus() == FieldPointType.PRIMARY_GOAL) {
                             handleIWon();
                         }
@@ -180,9 +186,8 @@ public class GameActivity extends Activity implements LocationListener {
 
         // Setup for popup window
         View popupView = inflater.inflate(R.layout.popup_view, null, false);
-        final PopupWindow pw = new PopupWindow(popupView);
-        pw.showAtLocation(findViewById(R.id.activityGameLayout), Gravity.CENTER, 0, 0);
-        pw.update(0, 0, 1000, 1000);
+        final PopupWindow pw = new PopupWindow(popupView,
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         Button close = (Button) popupView.findViewById(R.id.popUpButton);
         close.setOnClickListener(new View.OnClickListener() {
@@ -197,6 +202,7 @@ public class GameActivity extends Activity implements LocationListener {
                 GameActivity.this.startActivity(changeActivity);
             }
         });
+        pw.showAtLocation(popupView, Gravity.CENTER, 0 ,0);
     }
 
     @Override
