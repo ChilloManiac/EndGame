@@ -13,7 +13,6 @@
     <string name="title_activity_game">GameActivity</string>
     <string name="title_activity_dialog">DialogActivity</string>
     <string name="hello_world">Hello world!</string>
-    <string name="instruction_string">TODO: FILL THIS \n STUFF</string>
     <string name="hosting_title">Hosting...</string>
     <string name="hosting_breadtext">Your Gamecode:</string>
     <string name="Back">Back</string>
@@ -23,5 +22,8 @@
     <string name="joining_title">Joining...</string>
     <string name="joining_breadtext">Enter Code Here</string>
     <string name="joining_button_submit">Submit</string>
+
+    <string name="instruction_string">Instructions: \n When hosting a game you are given a string of characters, these are connected to a newly created game on our Server. \n Joining a server requires you to enter another persons gamecode and submitting it. \n Now you should already be playing the game</string>
+
 
 </resources>

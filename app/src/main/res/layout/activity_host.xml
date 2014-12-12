@@ -33,11 +33,4 @@
         android:id="@+id/HosteditText"
         android:layout_gravity="center_horizontal" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="150dip"
-        android:text="@string/Back"
-        android:id="@+id/host_back_button"
-        android:layout_gravity="center_horizontal" />
 </LinearLayout>

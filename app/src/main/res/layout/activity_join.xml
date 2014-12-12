@@ -22,24 +22,14 @@
         android:id="@+id/editText2"
         android:text="@string/joining_breadtext"
         android:layout_below="@+id/textView3"
-        android:layout_marginTop="105dip"
-        android:layout_toStartOf="@+id/join_back_button" />
+        android:layout_marginTop="105dip" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/joining_button_submit"
         android:id="@+id/join_submit_button"
-        android:layout_alignTop="@+id/editText2"
-        android:layout_alignBottom="@+id/editText2"
-        android:layout_toEndOf="@+id/editText2" />
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
-    <Button
-        android:layout_width="100dip"
-        android:layout_height="wrap_content"
-        android:text="@string/Back"
-        android:id="@+id/join_back_button"
-        android:layout_below="@+id/join_submit_button"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="102dp" />
 </RelativeLayout>

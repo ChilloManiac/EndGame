@@ -17,10 +17,4 @@
         android:id="@+id/textView4"
         android:layout_gravity="center_horizontal" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/Back"
-        android:id="@+id/instruction_back_button"
-        android:layout_gravity="center_horizontal" />
 </LinearLayout>
