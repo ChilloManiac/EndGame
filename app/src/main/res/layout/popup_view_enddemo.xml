@@ -19,7 +19,7 @@
             android:textSize="26dp"
             android:id="@+id/popUp2Text"
             android:layout_gravity="center_horizontal"
-            android:paddingBottom="30dp"/>
+            android:paddingBottom="60dp"/>
 
         <Button
             android:layout_width="wrap_content"
