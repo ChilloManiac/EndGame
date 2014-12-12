@@ -5,9 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.hardware.GeomagneticField;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -29,25 +34,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class GameActivity extends Activity implements LocationListener {
+public class GameActivity extends Activity implements LocationListener, SensorEventListener {
 
     private ImageView image;
     private float currentDegree = 0f;
     private TextView txtDegrees;
     private LocationManager locationManager;
+    private SensorManager sensorManager;
     private String locationProvider;
+    private Location currentLocation;
 
     Location waypoint = new Location("");
 
     float dist = -1;
-    float bearing = 0;
-    float myHeading = 0;
-    float arrow_rotation = 0;
-    float arrow_rotationOld = 0;
     ArrayList<FieldPoint> field = null;
     private ServerHandler server;
     private String gameName;
     private String player;
+
+    float[] inR = new float[16];
+    float[] I = new float[16];
+    float[] gravity = new float[3];
+    float[] geomag = new float[3];
+    float[] orientVals = new float[3];
+
+    double azimuth = 0;
+    float floatazimuth = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +84,10 @@ public class GameActivity extends Activity implements LocationListener {
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationProvider = LocationManager.GPS_PROVIDER;
-        locationManager.requestLocationUpdates(locationProvider, 0, 0, this);
+        locationManager.requestLocationUpdates(locationProvider, 1000, 5, this);
+
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
         Location location = locationManager.getLastKnownLocation(locationProvider);
         if (location != null) {
@@ -128,7 +143,7 @@ public class GameActivity extends Activity implements LocationListener {
                     locationPoint.setLongitude(fp.getLongitude());
                     double dist = locationPoint.distanceTo(location);
 
-                    if (dist <= 3) {
+                    if (dist <= 8) {
                         if (fp.getStatus() == FieldPointType.DANGERZONE) {
                             image.getDrawable().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
                         } else  {
@@ -146,35 +161,83 @@ public class GameActivity extends Activity implements LocationListener {
                 }
             }
 
+            //Current location for compass
+            currentLocation = location;
+
             //Display location (for debug)
             TextView gameTextView = (TextView) findViewById(R.id.gameTextView); //debug
             gameTextView.setText(lastLocationString);  //debug
 
             dist = location.distanceTo(waypoint);
-            bearing = location.bearingTo(waypoint);    // -180 to 180
-            myHeading = location.getBearing();         // 0 to 360
-
-            // Calculate where the arrow should point
-            arrow_rotation = (bearing - myHeading) * -1;
-            if (arrow_rotation < 0) {
-                arrow_rotation = 180 + (180 + arrow_rotation);
-            }
-
-            RotateAnimation ra = new RotateAnimation(currentDegree, -arrow_rotation,
-                    Animation.RELATIVE_TO_SELF, 0.5f,
-                    Animation.RELATIVE_TO_SELF, 0.5f);
-
-            ra.setDuration(210);
-            ra.setFillAfter(true);
-            image.startAnimation(ra);
-
-            currentDegree = -arrow_rotation;
-            arrow_rotationOld = arrow_rotation;
-
-            txtDegrees = (TextView) findViewById(R.id.gameDegrees);
-            txtDegrees.setText("Waypoint bearing: " + String.valueOf(arrow_rotation) + " degrees, "
-                    + String.valueOf(dist) + "m");
         }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if (sensorEvent.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE)
+            return;
+
+        // Gets the value of the sensor that has been changed
+        switch (sensorEvent.sensor.getType()) {
+            case Sensor.TYPE_ACCELEROMETER:
+                gravity = sensorEvent.values.clone();
+                break;
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                geomag = sensorEvent.values.clone();
+                break;
+        }
+
+        //If values are not null, then calculate the azimuth
+        if (gravity != null && geomag != null) {
+            //Create rotation matrix.
+            boolean success = SensorManager.getRotationMatrix(inR, I, gravity, geomag);
+
+            if (success) {
+                //Use rotation matrix to calculate orientation.
+                SensorManager.getOrientation(inR, orientVals);
+                //Convert azimuth to degrees.
+                azimuth = Math.toDegrees(orientVals[0]);
+            }
+        }
+
+        //Typecast to float for use in animations.
+        floatazimuth = (float)azimuth;
+        GeomagneticField geoField = new GeomagneticField(
+                (float) currentLocation.getLatitude(),
+                (float) currentLocation.getLongitude(),
+                (float) currentLocation.getAltitude(),
+                System.currentTimeMillis());
+        floatazimuth += geoField.getDeclination(); // converts magnetic north into true north
+
+        float bearing = currentLocation.bearingTo(waypoint); // (it's already in degrees)
+        float direction = floatazimuth - bearing;
+
+        //Create a rotation animation (reverse turn degree degrees)
+        RotateAnimation ra = new RotateAnimation(
+                currentDegree,
+                -direction,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF,
+                0.5f);
+
+        // how long the animation will take place
+        ra.setDuration(210);
+
+        // set the animation after the end of the reservation status
+        ra.setFillAfter(true);
+
+        // Start the animation
+        image.startAnimation(ra);
+        currentDegree = -direction;
+
+        txtDegrees = (TextView) findViewById(R.id.gameDegrees);
+        txtDegrees.setText("Heading: " + String.valueOf(direction) + " degrees, "
+                + String.valueOf(dist) + "m");
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // not in use
     }
 
     private void handleIWon() {
@@ -219,11 +282,21 @@ public class GameActivity extends Activity implements LocationListener {
 
     @Override
     protected void onResume() {
+        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
+                SensorManager.SENSOR_DELAY_NORMAL);
+
+        locationManager.requestLocationUpdates(locationProvider, 1000, 5, this);
+
         super.onResume();
     }
 
     @Override
     protected void onPause() {
+        //stop the listener and save battery
+        sensorManager.unregisterListener(this);
+        locationManager.removeUpdates(this);
         super.onPause();
     }
 
