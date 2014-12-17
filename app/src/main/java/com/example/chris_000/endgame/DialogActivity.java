@@ -35,6 +35,9 @@ public class DialogActivity extends FragmentActivity {
                 transaction = getSupportFragmentManager().beginTransaction();
 
                 transaction.add(R.id.dialogLayoutFrame, DialogMsgFragment).commit();
+
+                //todo loser code here
+
             } else if (iWon == true) {
                 if (findViewById(R.id.dialogLayoutFrame) != null && iWon == true) {
                     if (savedInstanceState != null) {
@@ -45,6 +48,8 @@ public class DialogActivity extends FragmentActivity {
                     transaction = getSupportFragmentManager().beginTransaction();
 
                     transaction.add(R.id.dialogLayoutFrame, DialogChoiceFragment).commit();
+
+                    //todo victory code here
                 }
             }
         } else {
@@ -57,6 +62,8 @@ public class DialogActivity extends FragmentActivity {
                 transaction = getSupportFragmentManager().beginTransaction();
 
                 transaction.add(R.id.dialogLayoutFrame, DialogMsgFragment).commit();
+
+                //initial text
             }
         }
 

@@ -144,18 +144,14 @@ public class GameActivity extends Activity implements LocationListener, SensorEv
                     double dist = locationPoint.distanceTo(location);
 
                     if (dist <= 8) {
-                        if (fp.getStatus() == FieldPointType.DANGERZONE) {
-                            image.getDrawable().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
-                        } else  {
-                            image.getDrawable().setColorFilter(Color.BLUE, PorterDuff.Mode.MULTIPLY);
-                        }
-                        if (fp.getStatus() == FieldPointType.SECONDARY_GOAL){
-                            image.getDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.MULTIPLY);
-                        } else {
-                            image.getDrawable().setColorFilter(Color.BLUE, PorterDuff.Mode.MULTIPLY);
-                        }
+                        image.getDrawable().setColorFilter(Color.BLUE, PorterDuff.Mode.MULTIPLY);
+
                         if (fp.getStatus() == FieldPointType.PRIMARY_GOAL) {
                             handleIWon();
+                        } else if (fp.getStatus() == FieldPointType.SECONDARY_GOAL){
+                            image.getDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.MULTIPLY);
+                        } else if (fp.getStatus() == FieldPointType.DANGERZONE) {
+                            image.getDrawable().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
                         }
                     }
                 }
