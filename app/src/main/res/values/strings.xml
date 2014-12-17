@@ -25,5 +25,12 @@
 
     <string name="instruction_string">Instructions: \n When hosting a game you are given a string of characters, these are connected to a newly created game on our Server. \n Joining a server requires you to enter another persons gamecode and submitting it. \n Now you should already be playing the game</string>
 
+    //dialog
+    <string name="introAxis">Agent Schwartz!\nWir haben ein mission for you!\nEin English agent has been zighted in Schweiz.\nEin technology-institüt haben eine Gruppe Zcientists.\nDu musste Extrakte them\nViel Glögg\n</string>
+    <string name="introAllies">Smith! .. Smith! .. Do you copy?\nGood.\nWe got a new one for ya, this time it\'s in Switzerland!\nTheres a group of scientists fortified in a bunker, we need you to extract them ASAP.\nBecareful though, before locking themself in they activated the landmines around the facility.\nTake care Laddie. </string>
+    <string name="winAxis">Sehr Gut!\nMit der Zcientists in unsere hands, die next step is reicht in front of uz.\nWir haben ein paar Optionen:\n\nA. Ein superserum dat will make unsere soldaten super stärk.\n\nB. Ein Atomspränghovet to blöw up unsere enemiez.\n\nC. Ein neue Missil-prototypen, dat we mit unsere Zcientist massen-produceren kann.\n\nDie valg is deine.\n </string>
+    <string name="winAllies">Good job Smith, i knew we could count on ya.\nAlright with the intel we\'ve gotten from the scientist, we already have the next steps planned.\nWe\'ve got a couple options, we\'ll let you decide where ya wanna go:\n\nA. The scientist knew about a secret super serum project.\n\nB. We got some intel on a series of nuclear warheads that we\'d like you to look at.\n\nC. A new missile prototype has been discovered. Go get it for us.</string>
+    <string name="loseAxis">NEIN NEIN NEIN NEIN NEIN NEIN NEIN NEIN\nDAS WAR EIN BEFEHL!\nSchwarts ich bin really skuffet in dich\nach, oh wëll\nWir must warten und see was die English do next.\n </string>
+    <string name="loseAllies">Well shit.\nAlright Smith, we\'ll get them on the next one.\nRight now we\'ll keep a lookout for their next move.\nWe will have you on standby till then. \nBe ready when we next contact you.\nOut....\n </string>
 
 </resources>

@@ -34,4 +34,14 @@
         android:layout_toStartOf="@+id/dialogChoiceButtonA"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="60dip"
+        android:layout_height="wrap_content"
+        android:text="C"
+        android:id="@+id/dialogChoiceButtonC"
+        android:layout_toStartOf="@+id/dialogChoiceButtonB"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
 </LinearLayout>

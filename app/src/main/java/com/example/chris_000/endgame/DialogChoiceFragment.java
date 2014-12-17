@@ -25,13 +25,14 @@ public class DialogChoiceFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
-
         Button buttonA = (Button) getView().findViewById(R.id.dialogChoiceButtonA);
         Button buttonB = (Button) getView().findViewById(R.id.dialogChoiceButtonB);
-
+        Button buttonC = (Button) getView().findViewById(R.id.dialogChoiceButtonC);
 
         buttonA.setOnClickListener(new myClickListener());
         buttonB.setOnClickListener(new myClickListener());
+        buttonC.setOnClickListener(new myClickListener());
+
         super.onViewCreated(view, savedInstanceState);
     }
 

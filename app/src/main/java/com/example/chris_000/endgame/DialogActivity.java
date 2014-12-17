@@ -14,6 +14,8 @@ public class DialogActivity extends FragmentActivity {
     private android.support.v4.app.Fragment DialogChoiceFragment;
     private ArrayList<FieldPoint> field = null;
     private Boolean iWon;
+    private String player;
+    private TextView dialogue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +25,10 @@ public class DialogActivity extends FragmentActivity {
         if (extras != null) {
             field = (ArrayList<FieldPoint>) extras.get("field");
             iWon = (Boolean) extras.get("won");
+            player = (String) extras.get("player");
         }
+
+        dialogue = (TextView) findViewById(R.id.TextViewDialog);
 
         if (iWon != null) {
             if (findViewById(R.id.dialogLayoutFrame) != null && iWon == false) {
@@ -36,7 +41,13 @@ public class DialogActivity extends FragmentActivity {
 
                 transaction.add(R.id.dialogLayoutFrame, DialogMsgFragment).commit();
 
-                //todo loser code here
+                if (player != null) {
+                    if (player.equals("player1")) {
+                        dialogue.setText(this.getString(R.string.loseAllies));
+                    } else if (player.equals("player2")) {
+                        dialogue.setText(this.getString(R.string.loseAxis));
+                    }
+                }
 
             } else if (iWon == true) {
                 if (findViewById(R.id.dialogLayoutFrame) != null && iWon == true) {
@@ -49,7 +60,13 @@ public class DialogActivity extends FragmentActivity {
 
                     transaction.add(R.id.dialogLayoutFrame, DialogChoiceFragment).commit();
 
-                    //todo victory code here
+                    if (player != null) {
+                        if (player.equals("player1")) {
+                            dialogue.setText(this.getString(R.string.winAllies));
+                        } else if (player.equals("player2")) {
+                            dialogue.setText(this.getString(R.string.winAxis));
+                        }
+                    }
                 }
             }
         } else {
@@ -63,23 +80,14 @@ public class DialogActivity extends FragmentActivity {
 
                 transaction.add(R.id.dialogLayoutFrame, DialogMsgFragment).commit();
 
-                //initial text
+                if (player != null) {
+                    if (player.equals("player1")) {
+                        dialogue.setText(this.getString(R.string.introAllies));
+                    } else if (player.equals("player2")) {
+                        dialogue.setText(this.getString(R.string.introAxis));
+                    }
+                }
             }
         }
-
-        TextView textView = (TextView) findViewById(R.id.TextViewDialog);
-        //TODO: put in dialog code here
-        if (field != null) {
-            textView.setText("");
-            for (FieldPoint fp : field) {
-                textView.append(fp.toString() + "\n");
-            }
-        }
-        if (iWon != null) {
-            textView.setText(iWon.toString());
-        }
-
     }
-
-
 }
