@@ -103,7 +103,7 @@ public class HostActivity extends Activity implements LocationListener {
                         }
                     }
 
-                    Intent changeActivity = new Intent(HostActivity.this, DialogActivity.class);
+                    Intent changeActivity = new Intent(HostActivity.this, IntroductionActivity.class);
                     changeActivity.putExtra("field", field);
                     changeActivity.putExtra("name", gameName);
                     changeActivity.putExtra("player", "player1");
